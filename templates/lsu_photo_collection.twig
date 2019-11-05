@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% block content %}
+{% autoescape true %}
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mods="http://www.loc.gov/mods/v3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd"> 
+  
+<titleInfo>
+    <title>{{ data.title|trim('.')|escape|raw }}</title>
+</titleInfo>
+<identifier type="local" displayLabel="Item Number">{{ attribute(data, 'identifier item number')|trim }}</identifier>
+
+
+{% if attribute(data, 'date created') %}
+<originInfo>
+{% if ('Circa' not in attribute(data, 'date created')) %} 
+    <dateCreated keyDate="yes">{{ attribute(date, 'date created')|trim }}</dateCreated>
+{% endif %}
+{% if 'Circa' in attribute(data, 'date created') %} 
+{% set daterange = attribute(data, 'date created')|trim('Circa ')|split('-') %}
+    <dateCreated keyDate="yes" qualifier="approximate" point="start">{{ daterange['0'] }}</dateCreated>
+    <dateCreated keyDate="yes" qualifier="approximate" point="end">{{ daterange['1'] }}</dateCreated>
+ {% set dig_date = attribute(data, 'digitization date') %}
+    <dateCaptured encoding="w3cdtf">{{ dig_date }}</dateCaptured>
+{% endif %}
+</originInfo>
+{% endif %}
+
+{% if  attribute(data, 'subject topic') %}
+{% for topic in attribute(data, 'subject topic')|split(';')|raw %}
+<subject authority="lcsh" displayLabel="Subject - Topic">
+{% for subtopic in topic|split('--') %}
+    <topic>{{ subtopic|trim }}</topic>
+{% endfor %}
+</subject>
+{% endfor %}
+{% endif %}
+
+
+{% if attribute(data, 'subject geographic') %}
+<subject authority="lcsh" displayLabel="Subject - Location">
+    <topic>{{ attribute(data, 'subject geographic')|trim|raw }}</topic>
+</subject>
+{% endif %}
+
+{% if attribute(data, 'subject temporal') %}
+<subject authority="lcsh" displayLabel="Subject - Time Period">
+    <temporal>{{ attribute(data, 'subject temporal')|trim|raw }}</temporal>
+</subject>
+{% endif %}
+
+{% if  attribute(data, 'subject name') %}
+<subject displayLabel="Subject - Name">
+    <name authority="naf" type="corporate">
+        <namePart>{{ attribute(data, 'subject name')|trim|raw }}</namePart>
+    </name>
+</subject>
+{% endif %}
+
+{% if  attribute(data, 'subject name personal') %}
+<subject displayLabel="Subject - Name">
+    <name authority="naf" type="personal">
+        <namePart>{{ attribute(data, 'subject name personal')|trim|raw }}</namePart>
+    </name>
+</subject>
+{% endif %}
+
+{% if  attribute(data, 'subject name corporate') %}
+<subject displayLabel="Subject - Name">
+    <name authority="naf" type="corporate">
+        <namePart>{{ attribute(data, 'subject name corporate')|trim|raw }}</namePart>
+    </name>
+</subject>
+{% endif %}
+
+{% if attribute(data, 'abstract description') %}
+<abstract>{{ attribute(data, 'abstract description')|trim|escape|raw }}</abstract>
+{% endif %} 
+
+{% if data.note %}
+<note type="content">{{ data.note|trim|raw }}</note>
+{% endif %} 
+
+{% if  attribute(data, 'type of resource') %}
+{% for type in attribute(data, 'type of resource') %}
+<typeOfResource>{{ type|trim|lower }}</typeOfResource>
+{% endfor %}
+{% endif %} 
+
+{% if attribute(data, 'form') %}
+<physicalDescription>
+    <note type="medium"></note>
+{% if attribute(data, 'internet media type') %}
+    <internetMediaType>{{ attribute(data, 'internet media type')|trim|lower }}</internetMediaType>
+{% endif%}
+    <form authority="aat">{{ data.form|trim }}</form>
+</physicalDescription>
+{% endif %} 
+
+{% if attribute(data, 'source') %}
+<name type="corporate" authority="naf" authorityURI="http://id.loc.gov/authorities/names" valueURI="http://id.loc.gov/authorities/names/no2015036095" displayLabel="Contributing Repository">
+    <namePart>{{ data.source|trim|raw }}</namePart>
+    <role>
+        <roleTerm type="text" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/rps">Repository</roleTerm>
+    </role>
+</name>
+{% endif %}
+
+
+
+{% set dig_coll = attribute(data, 'digital collection') %}
+{% set parent_item = attribute(data, 'parent item title') %}
+
+{% if dig_coll or parent_item %}
+<relatedItem type="host">
+{% if parent_item %}
+    <titleInfo displayLabel="Parent Item Title">
+        <title>{{ parent_item }}</title>
+    </titleInfo>
+{% endif %}
+{% if dig_coll %}
+    <titleInfo displayLabel="Digital Collection">
+        <title>{{ dig_coll|raw }}</title>
+    </titleInfo>
+{% endif %}
+{% if attribute(data, 'relation') %}
+    <location>
+            <url displayLabel="Relation">{{ data.relation }}</url>
+    </location>
+{% endif %}
+{% if attribute(data, 'repository collection guide')%}
+     <location>
+        <url displayLabel="Repository Collection Guide"> {{ attribute(data, 'repository collection guide') }}</url>
+    </location>
+{% endif %}
+{% if attribute(data, 'arrangement record group') %}
+    <identifier type="local" displayLabel="Record Group">{{ attribute(data, 'arrangement record group') }}</identifier>
+{% endif %}
+{% if attribute(data, 'arrangement box') %}
+    <titleInfo displayLabel="Box">
+            <partNumber>{{ attribute(data, 'arrangement box') }}</partNumber>
+    </titleInfo>
+{% endif %}
+{% if attribute(data, 'arrangement folder') %}
+    <titleInfo displayLabel="Folder">
+            <partNumber>{{ attribute(data, 'arrangement folder') }}</partNumber>
+    </titleInfo>
+{% endif %}
+</relatedItem>
+{% endif %} 
+
+
+{% if  attribute(data, 'language') %}
+{% for language in attribute(data, 'language')|split (';') %}
+<language>
+    <languageTerm type="code" authority="iso639-2b">{{ language|trim|lower }}</languageTerm>
+</language>
+{% endfor %}
+{% endif %} 
+
+{% if attribute(data, 'location physical location') %}
+<location>
+    <physicalLocation displayLabel="Physical Location" xlink:href="http://lib.lsu.edu">{{ attribute(data, 'location physical location')|raw }}</physicalLocation>
+{% endif %}
+{% if attribute(data, 'location oclc member symbol') %}
+    <physicalLocation displayLabel="OCLC Member Symbol" xlink:href="http://lib.lsu.edu">{{ attribute(data, 'location oclc member symbol') }}</physicalLocation>
+{% endif %}
+{% if attribute(data, 'location sublocation') %}
+    <holdingSimple>
+        <copyInformation>
+            <sublocation>{{ attribute(data, 'location sublocation')|raw }}</sublocation>
+            <shelfLocator>{{ attribute(data, 'location shelving location') }}</shelfLocator>
+        </copyInformation>
+    </holdingSimple>
+</location>
+{% endif %}
+
+{% if attribute(data, 'rights') %}
+    <accessCondition type="use and reproduction" displayLabel="Rights Statement">{{ data.rights|trim|escape|raw }}</accessCondition>
+{% endif %}
+
+{% if attribute(data, 'contact information') %}
+    <accessCondition type="use and reproduction" displayLabel="Contact Information">{{ attribute(data, 'contact information')|trim|escape|raw }}</accessCondition>
+{% endif %}
+
+{% if attribute(data, 'preferred citation')%}
+    <note type="preferred citation" displayLabel="Preferred Citation">{{ attribute(data, 'preferred citation')|trim|escape|raw }}</note>
+{% endif %}
+
+{% if attribute(data, 'digitized by') %}
+    <name type="personal" displayLabel="Digitized by">
+        <namePart>{{ attribute(data, 'digitized by') }}</namePart>
+        <role>
+            <roleTerm type="text" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/fac">Facsimilist</roleTerm>
+        </role>
+    </name>
+    <extension>
+        <digitizedBy displayLabel="Digital Reproduction Information">{{ attribute(data, 'digital reproduction information')|raw }}</digitizedBy>
+    </extension>
+{% endif %}
+
+    <recordInfo>
+        <recordContentSource authority="local">lsu/en</recordContentSource>
+        <recordCreationDate encoding="w3cdtf">{{attribute(data, 'record creation date') }}</recordCreationDate>
+    </recordInfo>
+</mods>
+{% endautoescape %}
+{% endblock %}
