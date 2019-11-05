@@ -85,6 +85,9 @@ function islandora_multi_importer_read_filedata($file_path, $numrows = 20, $offs
     $rowHeaders_utf8=array_map('stripslashes',$rowHeaders[0]);
     $rowHeaders_utf8=array_map('utf8_encode',$rowHeaders_utf8);
     $rowHeaders_utf8=array_map('strtolower',$rowHeaders_utf8);
+    $rowHeaders_utf8=str_replace('(', '',$rowHeaders_utf8);
+    $replace_strs=array("(",")","[","]","-");
+    $rowHeaders_utf8=str_replace($replace_strs, '', $rowHeaders_utf8);
     $rowHeaders_utf8=array_map('trim',$rowHeaders_utf8);
     foreach ($worksheet->getRowIterator() as $row) {
         $rowindex = $row->getRowIndex(); 
