@@ -665,6 +665,7 @@ function islandora_multi_importer_twig_form($form, &$form_state, $file_data) {
     '#value' => t('Preview'),
     '#group' => 'group_tabs',
     '#ajax' => array(
+      //'callback' => array('islandora_multi_importer_previstwig_ajax', 'islandora_multi_importer_validate_mods' ),
       'callback' => 'islandora_multi_importer_previstwig_ajax',
       'wrapper' => 'islandora-multi-twigoutput',
     ),
@@ -1286,6 +1287,7 @@ function islandora_multi_importer_previstwig_ajax($form, &$form_state) {
     'arguments' => $arguments,
   */
   $commands[] = array('command' => 'focusHTab', 'arguments' => array('tabid' => '#edit-step4-group-tabs-group-twigoutput-tab'));
+  //dpm($form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw']);
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
@@ -1294,6 +1296,7 @@ function islandora_multi_importer_previstwig_ajax($form, &$form_state) {
  */
 function islandora_multi_importer_validate_mods($form, &$form_state) {
     //dpm doesn't work in an ajax form
+    dpm('bleh');
 }
 
 /**
@@ -1427,10 +1430,23 @@ function islandora_multi_importer_form_submit(array $form, array &$form_state) {
 
   // Handle the ingest buttom.
   if ($form_state['triggering_element']['#value'] == t('Ingest')) {
+  //Check to see if we can validate sample mods for now(at least it might work here)
+  //dpm($form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw']);
+  $raw = $form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw'];
+  $xml = new DOMDocument();
+  $xml->loadXML($raw);
+  if(!$xml->schemaValidate('mods-6-6.xsd')) {
+      dpm('MODS are Invalid, check your input and your template');
+  }
+  else{
+    dpm('Mods are valid according to schema');
+  }
+
+
     // Check if a ZIP file needs to be uploaded.
     if ($form_state['storage']['step'] == 3) {
       // Lets check if Google was used as source. I should
-     
+      
       if ($form_state['storage']['values']['step0']['data_source'] == 'google' && !empty($form_state['storage']['values']['step2']['google_api']['spreadsheet_id'])) {
         $spreadsheetId = trim($form_state['storage']['values']['step2']['google_api']['spreadsheet_id']);
         // Parse the ID from the URL if a full URL was provided.
