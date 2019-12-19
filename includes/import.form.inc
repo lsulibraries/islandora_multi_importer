@@ -501,6 +501,15 @@ function islandora_multi_importer_previs_form(array $form, array &$form_state, a
   return $form;
 }
 
+/*
+ * Implements hook_validate() for islandora_multi_importer_previs_form.
+ */
+function islandora_multi_importer_previs_validate($form, &$form_state) {
+  if ($form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw'] != '') {
+    form_set_error('calculating');
+  }
+}
+
 /**
  * Twig edit/preview Form.
  */
