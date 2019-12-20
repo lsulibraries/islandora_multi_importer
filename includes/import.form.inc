@@ -825,7 +825,7 @@ function islandora_multi_importer_cmodelmapping_form(array $form, array &$form_s
         '#attributes' => array(),
         '#description' => t('Select the source data field to use for CMODEL mapping'),
         '#options' => $file_data['headers'],
-        '#default' => 1,
+        '#default_value' => 1,
       ),
       'checkcmodels_button' => array(
         '#prefix' => '<div style="height:50px">',
