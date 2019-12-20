@@ -1290,13 +1290,6 @@ function islandora_multi_importer_previstwig_ajax($form, &$form_state) {
 }
 
 /**
- * Validate generated mods (eventually)...
- */
-function islandora_multi_importer_validate_mods($form, &$form_state) {
-    //dpm doesn't work in an ajax form
-}
-
-/**
  * Save template callback for ajax driven form.
  */
 function islandora_multi_importer_savetwig_ajax($form, &$form_state) {
