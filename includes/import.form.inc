@@ -825,6 +825,7 @@ function islandora_multi_importer_cmodelmapping_form(array $form, array &$form_s
         '#attributes' => array(),
         '#description' => t('Select the source data field to use for CMODEL mapping'),
         '#options' => $file_data['headers'],
+        '#default_value' => 1,
       ),
       'checkcmodels_button' => array(
         '#prefix' => '<div style="height:50px">',
@@ -1095,11 +1096,12 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as Object PID'),
         '#options' => $file_data['headers'],
+        '#default_value' => 2,
       ),
       'pidtype' => array(
         '#type' => 'checkbox',
         '#description' => t('Check to let Islandora build PID for you and ignore the Object PID source fields'),
-        '#default_value' => TRUE,
+        '#default_value' => FALSE,
         '#states' => array(
         	'visible' => array(
         		':input[name=action]' => array('value' => 'ingest'),
@@ -1121,6 +1123,7 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as parent Object'),
         '#options' => $file_data['headers'],
+        '#default_value' => 3,
       ),
       'parenttype' => array(
         '#type' => 'checkbox',
@@ -1141,6 +1144,7 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as label for Object'),
         '#options' => $file_data['headers'],
+        '#default_value' => 11,
       ),
       'stub' => array(
         '#markup' => '&nbsp;',
@@ -1159,6 +1163,7 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as Sequence order index in multi child objects'),
         '#options' => $file_data['headers'],
+        '#default_value' => 4,
       ),
       'stub1' => array(
         '#markup' => '&nbsp;',
@@ -1181,6 +1186,7 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
           'LOCAL' => 'local*',
           'ZIP' => 'ZIP',
         ),
+        '#default_value' => 'ZIP',
       ),
     ),
     'relsext_row' => array(
