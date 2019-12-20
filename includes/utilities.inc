@@ -359,11 +359,6 @@ function islandora_multi_importer_twig_process(array $twig_input = array()) {
     'cache' => drupal_realpath('private://'),
   ));
 
-  //add jasny twig extensions for PCRE
-  $twig->addExtension('jasny/pcre');
-  //add loader for TwigPcreExtension
-  //$twig->addExtension('vendor/twig/twig/src/TwigExtension/TwigPcreExtension');
-
   //We won't validate here. We are here because our form did that
   $output = $twig->render($twig_input['name'], $twig_input['data']);
   //@todo catch anyway any twig error to avoid the worker to fail bad.
