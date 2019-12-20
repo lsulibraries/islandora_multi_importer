@@ -1430,7 +1430,7 @@ function islandora_multi_importer_form_submit(array $form, array &$form_state) {
     // Check if a ZIP file needs to be uploaded.
     if ($form_state['storage']['step'] == 3) {
       // Lets check if Google was used as source. I should
-      
+
       if ($form_state['storage']['values']['step0']['data_source'] == 'google' && !empty($form_state['storage']['values']['step2']['google_api']['spreadsheet_id'])) {
         $spreadsheetId = trim($form_state['storage']['values']['step2']['google_api']['spreadsheet_id']);
         // Parse the ID from the URL if a full URL was provided.
