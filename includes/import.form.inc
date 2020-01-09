@@ -1096,12 +1096,11 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as Object PID'),
         '#options' => $file_data['headers'],
-        '#default_value' => 2,
       ),
       'pidtype' => array(
         '#type' => 'checkbox',
         '#description' => t('Check to let Islandora build PID for you and ignore the Object PID source fields'),
-        '#default_value' => FALSE,
+        '#default_value' => TRUE,
         '#states' => array(
         	'visible' => array(
         		':input[name=action]' => array('value' => 'ingest'),
@@ -1123,7 +1122,6 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as parent Object'),
         '#options' => $file_data['headers'],
-        '#default_value' => 3,
       ),
       'parenttype' => array(
         '#type' => 'checkbox',
@@ -1144,7 +1142,6 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as label for Object'),
         '#options' => $file_data['headers'],
-        '#default_value' => 11,
       ),
       'stub' => array(
         '#markup' => '&nbsp;',
@@ -1163,7 +1160,6 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
         '#attributes' => array(),
         '#description' => t('Select the source field to use as Sequence order index in multi child objects'),
         '#options' => $file_data['headers'],
-        '#default_value' => 4,
       ),
       'stub1' => array(
         '#markup' => '&nbsp;',
@@ -1186,7 +1182,6 @@ function islandora_multi_importer_objectmapping_form($form, &$form_state, $file_
           'LOCAL' => 'local*',
           'ZIP' => 'ZIP',
         ),
-        '#default_value' => 'ZIP',
       ),
     ),
     'relsext_row' => array(
@@ -1420,10 +1415,23 @@ function islandora_multi_importer_form_submit(array $form, array &$form_state) {
 
   // Handle the ingest buttom.
   if ($form_state['triggering_element']['#value'] == t('Ingest')) {
+  //Check to see if we can validate sample mods for now(at least it might work here)
+  //dpm($form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw']);
+  $raw = $form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw'];
+  $xml = new DOMDocument();
+  $xml->loadXML($raw);
+  if(!$xml->schemaValidate('mods-6-6.xsd')) {
+      dpm('MODS are Invalid, check your input and your template');
+  }
+  else{
+    dpm('Mods are valid according to schema');
+  }
+
+
     // Check if a ZIP file needs to be uploaded.
     if ($form_state['storage']['step'] == 3) {
       // Lets check if Google was used as source. I should
-     
+
       if ($form_state['storage']['values']['step0']['data_source'] == 'google' && !empty($form_state['storage']['values']['step2']['google_api']['spreadsheet_id'])) {
         $spreadsheetId = trim($form_state['storage']['values']['step2']['google_api']['spreadsheet_id']);
         // Parse the ID from the URL if a full URL was provided.
