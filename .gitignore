@@ -1,4 +1,3 @@
-
 vendor/*
 
 .idea/workspace.xml
@@ -10,3 +9,4 @@ vendor/*
 .idea/islandora_multi_importer.iml
 
 .idea/copyright/profiles_settings.xml
+
