@@ -1420,10 +1420,10 @@ function islandora_multi_importer_form_submit(array $form, array &$form_state) {
   $xml = new DOMDocument();
   $xml->loadXML($raw);
   if(!$xml->schemaValidate('mods-6-6.xsd')) {
-      dpm('MODS are Invalid, check your input and your template');
+      drupal_set_message('MODS are Invalid, check your input and your template', 'error');
   }
   else{
-    dpm('Mods are valid according to schema');
+    drupal_set_message('Mods are valid according to schema', 'status');
   }
 
 
