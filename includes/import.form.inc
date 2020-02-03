@@ -1421,18 +1421,19 @@ function islandora_multi_importer_form_submit(array $form, array &$form_state) {
 
   // Handle the ingest buttom.
   if ($form_state['triggering_element']['#value'] == t('Ingest')) {
-  //Check to see if we can validate sample mods for now(at least it might work here)
-  //dpm($form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw']);
-  $raw = $form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw'];
-  $xml = new DOMDocument();
-  $xml->loadXML($raw);
-  if(!$xml->schemaValidate('mods-6-6.xsd')) {
-      drupal_set_message('MODS are Invalid, check your input and your template', 'error');
-  }
-  else{
-    drupal_set_message('Mods are valid according to schema', 'status');
-  }
+  //Check to see if we can validate sample mods on sample input (not comprehensive)
+  if (count($form_state['groups']) >= 1 ) {
+    $raw = $form_state['values']['step4']['group_tabs']['group_twigoutput_tab']['twig']['raw'];
+    $xml = new DOMDocument();
+    $xml->loadXML($raw);
+    if(!$xml->schemaValidate('mods-6-6.xsd')) {
+        drupal_set_message('MODS are Invalid, check your input and your template', 'error');
+    }
+    else{
+      drupal_set_message('Mods are valid according to schema', 'status');
+    }
 
+  }
 
     // Check if a ZIP file needs to be uploaded.
     if ($form_state['storage']['step'] == 3) {
